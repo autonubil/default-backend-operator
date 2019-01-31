@@ -1,0 +1,47 @@
+{
+	// Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+	// Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+	// Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch Operator - Remote",
+			"type": "go",
+			"request": "launch",
+			"mode": "debug",
+			"port": 2345,
+			"host": "127.0.0.1",
+			"program": "${workspaceFolder}/default-backend-operator.go",
+			"env": {
+				"HOME": "C:/Users/czeumer",
+				"SENTRY_DSN": "https://bb5a795c9cd446acbccd68851cd3dde1:831d92586b6349168040852a1d994ce9@sentry.autonubil.net/18"
+			},
+			"args": [
+				"--kubeconfig",
+				"C:/Users/czeumer/.kube/config",
+				"--alsologtostderr",
+				"-p",
+				"-v",
+				"99",
+				"-s",
+				"${workspaceFolder}/configs/example.json"
+			],
+			"showLog": true
+		},
+		{
+			"name": "Launch Operator - Local Files",
+			"type": "go",
+			"request": "launch",
+			"mode": "debug",
+			"port": 2345,
+			"host": "127.0.0.1",
+			"program": "${workspaceFolder}/grafana-config-operator.go",
+			"env": {
+				"HOME": "C:/Users/czeumer",
+				"SENTRY_DSN": "https://bb5a795c9cd446acbccd68851cd3dde1:831d92586b6349168040852a1d994ce9@sentry.autonubil.net/18"
+			},
+			"args": ["--kubeconfig", "C:/Users/czeumer/.kube/config", "--alsologtostderr", "-p", "-v", "3"],
+			"showLog": true
+		}
+	]
+}

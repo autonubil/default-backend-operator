@@ -1,0 +1,11 @@
+{
+	"Services": {
+		"calendar": {
+			"id": "calendar",
+			"name": "Calendar",
+			"description": "Office365 Calendar",
+			"url": "https://outlook.office.com/owa/?realm=autonubil.de",
+			"icon": "http://www.bytes.co.uk/application/themes/cloudflex/img/cloudflex/office365-icons/outlook-icon.svg"
+		}
+	}
+}
