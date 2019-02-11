@@ -38,7 +38,8 @@ build:
         mv * $GOPATH/src/$REPO/
         cd $GOPATH/src/$REPO/
         echo CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.Version=$CI_COMMIT_REF_NAME -X main.BuildDate=$(date --iso-8601=seconds) -X main.Commit=$CI_COMMIT_SHA -s" -a -installsuffix cgo  -v -o $ROOT/bin/default-backend-operator main.go
-        GOCACHE=/root/gocache CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.Version=$CI_COMMIT_REF_NAME -X main.BuildDate=$(date --iso-8601=seconds) -X main.Commit=$CI_COMMIT_SHA -s" -a -installsuffix cgo  -v -o $ROOT/bin/default-backend-operator ./default-backend-operator.go
+        GOCACHE=/root/gocache CGO_ENABLED=0 GOOS=linux go build -n -ldflags "-X main.Version=$CI_COMMIT_REF_NAME -X main.BuildDate=$(date --iso-8601=seconds) -X main.Commit=$CI_COMMIT_SHA -s" -a -installsuffix cgo  -v -o $ROOT/bin/default-backend-operator ./main.go
+        GOCACHE=/root/gocache CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.Version=$CI_COMMIT_REF_NAME -X main.BuildDate=$(date --iso-8601=seconds) -X main.Commit=$CI_COMMIT_SHA -s" -a -installsuffix cgo  -v -o $ROOT/bin/default-backend-operator ./main.go
         ls -alh $ROOT/
 
 # ls $ROOT/ -a -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
