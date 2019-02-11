@@ -16,7 +16,9 @@ stages:
 variables:
     DOCKER_TEST_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME
     DOCKER_RELEASE_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH:latest
-    REPO: gitlab.autonubil.net/kubernetes/default-backend-operator
+    REPO: github.com/autonubil/default-backend-operator
+    DOCKER_TAGGED_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME
+    DOCKER_PUBLIC_IMAGE: $PUBLIC_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
 
 sonar:
     stage: validate
@@ -61,24 +63,15 @@ release-image:
     only:
         - master
 
-deploy-stable-chart:
+publish-image:
     stage: release
     script:
-        - cd deployments
-        - mv chart default-backend-operator
-        - cd default-backend-operator
-        - helm_publish_chart.sh stable
-        - cat ./index.yaml
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker pull "${DOCKER_TEST_IMAGE}"
+        - docker tag "${DOCKER_TEST_IMAGE}" "${DOCKER_TAGGED_IMAGE}"
+        - docker push "${DOCKER_TAGGED_IMAGE}"
+        - docker login -u $PUBLIC_REGISTRY_USER -p $PUBLIC_REGISTRY_TOKEN $PUBLIC_REGISTRY
+        - docker tag "${DOCKER_TEST_IMAGE}" "${DOCKER_PUBLIC_IMAGE}"
+        - docker push "${DOCKER_PUBLIC_IMAGE}"
     only:
         - tags
-
-deploy-master-chart:
-    stage: release
-    script:
-        - cd deployments
-        - mv chart default-backend-operator
-        - cd default-backend-operator
-        - helm_publish_chart.sh latest
-        - cat ./index.yaml
-    only:
-        - master

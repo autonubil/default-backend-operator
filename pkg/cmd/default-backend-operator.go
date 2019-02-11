@@ -11,13 +11,16 @@ import (
 	goflag "flag"
 
 	raven "github.com/getsentry/raven-go"
+	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 
 	"github.com/autonubil/default-backend-operator/pkg/backend"
+	"github.com/autonubil/default-backend-operator/pkg/helm"
 	"github.com/autonubil/default-backend-operator/pkg/operator"
+	"github.com/autonubil/default-backend-operator/pkg/types"
 )
 
 var (
@@ -57,12 +60,7 @@ func NewCmdOptions() *cobra.Command {
 // cmd option parsing from flags, and the customization of the Tectonic assets.
 func NewCmdDefaultBackendOperator() (*cobra.Command, error) {
 	// Define the options for DefaultBackendOperator command
-	options, err := operator.NewBackendOperatorOptions()
-
-	if err != nil {
-		return nil, err
-	}
-
+	options := types.NewBackendOperatorOptions()
 	// Create a new command
 	cmd := &cobra.Command{
 		Use:   usage,
@@ -79,13 +77,19 @@ func NewCmdDefaultBackendOperator() (*cobra.Command, error) {
 
 	// Define the flags allowed in this command & store each option provided
 	// as a flag, into the DefaultBackendOperatorOptions
-
 	cmd.Flags().StringVarP(&options.KubeConfig, "kubeconfig", "", options.KubeConfig, "Path to a kube config. Only required if out-of-cluster.")
 	cmd.Flags().StringVarP(&options.Namespace, "namespace", "n", options.Namespace, "Namespace to watch for annotated configMaps in. If no namespace is provided, NAMESPACE env. var is used. Lastly, the '' (any namespaces) will be used as a last option.")
 	cmd.Flags().BoolVarP(&options.PrometheusEnabled, "prometheus", "p", options.PrometheusEnabled, "Enable Prometheus metrics on port 9350. If not specified PROMETHEUS_ENABLES env. var is checked for existence")
 
-	cmd.Flags().BoolVarP(&options.TemplatePath, "template", "t", options.PrometheusEnabled, "Template file that renders to valid HTML")
-	cmd.Flags().BoolVarP(&options.StaticsPath, "statics", "s", options.PrometheusEnabled, "Static entries")
+	cmd.Flags().StringVarP(&options.TemplatePath, "template", "t", options.TemplatePath, "Template file that renders to valid HTML")
+	cmd.Flags().StringVarP(&options.EntriesPath, "entries", "e", options.EntriesPath, "Resources to service via HTML under /res path ")
+	cmd.Flags().StringVarP(&options.StaticsPath, "statics", "s", options.StaticsPath, "Static entries")
+
+	cmd.Flags().StringVarP(&options.OidcConfig.Issuer, "oidc.issuer", "i", options.OidcConfig.Issuer, "OIDC Issuer")
+	cmd.Flags().StringVarP(&options.OidcConfig.ClientSecret, "oidc.secret", "x", options.OidcConfig.ClientSecret, "OIDC Secret")
+	cmd.Flags().StringVarP(&options.OidcConfig.ClientID, "oidc.clientid", "r", options.OidcConfig.ClientID, "OIDC Resource")
+	cmd.Flags().BoolVarP(&options.OidcConfig.Enforce, "oidc.enforce", "o", options.OidcConfig.Enforce, "Enforce authentication to access the site")
+	cmd.Flags().VarP(&options.OidcConfig.ScopeFlags, "oidc.scopes", "c", "Requested additional OIDC Scope. Defaults to openid, email and profile")
 
 	return cmd, nil
 }
@@ -96,15 +100,33 @@ func serveMetrics() {
 	glog.V(2).Infoln("Startet listening for prometheus metrics requests")
 }
 
-func serveBackend(options *operator.BackendOperatorOptions) {
-	// Listen for requests:
-	http.Handle("/", &backend.BackendHandler{Options: options})
-	http.ListenAndServe(":8081", nil)
+func serveBackend(options *types.BackendOperatorOptions) {
+	r := mux.NewRouter()
+	if options.StaticsPath != "" {
+		glog.V(2).Infof("Service statics from %s", options.StaticsPath)
+		fs := backend.MinifiedFileServer(http.Dir(options.StaticsPath))
+		r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+
+		if _, err := os.Stat(options.StaticsPath + "/" + "favicon.ico"); os.IsNotExist(err) {
+			r.PathPrefix("/favicon.ico").Handler(http.StripPrefix("/static/", fs))
+		}
+
+	}
+
+	handler := &backend.BackendHandler{Options: options}
+	r.HandleFunc("/auth", handler.IndexHandler)
+	r.HandleFunc("/logout", handler.IndexHandler)
+	r.HandleFunc("/", handler.IndexHandler)
+	http.ListenAndServe(":8081", r)
 	glog.V(2).Infoln("Startet listening for backend requests")
 }
 
 // Run the customization of the Tectonic assets
-func Run(cmd *cobra.Command, options *operator.BackendOperatorOptions) error {
+func Run(cmd *cobra.Command, options *types.BackendOperatorOptions) error {
+
+	if options.OidcConfig.Enforce && (options.OidcConfig.Issuer == "" || options.OidcConfig.ClientID == "") {
+		panic("You cannot enforce OIDC authentication without OIDC configuration")
+	}
 
 	configTags := make(map[string]string)
 	if options.Namespace != "" {
@@ -114,20 +136,20 @@ func Run(cmd *cobra.Command, options *operator.BackendOperatorOptions) error {
 		configTags["PrometheusEnabled"] = "true"
 	}
 
+	err := options.InitData()
+	if err != nil {
+		return err
+	}
+
 	raven.Capture(&raven.Packet{Level: raven.INFO, Message: "Started Default Backend Operator"}, configTags)
 
 	if options.PrometheusEnabled || len(os.Getenv("PROMETHEUS_ENABLED")) > 0 {
 		go serveMetrics()
 	}
 
-	/*
-		cntlr, err := operator.NewDefaultBackendController(
-			options.KubeConfig, options.Namespace)
+	_ = helm.RefreshHelm(options)
 
-		if err != nil {
-			return err
-		}
-	*/
+	options.OidcConfig.InitProvider()
 
 	// Start backend server:
 	go serveBackend(options)

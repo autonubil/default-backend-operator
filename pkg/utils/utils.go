@@ -17,6 +17,8 @@ limitations under the License.
 */
 
 import (
+	"math/rand"
+
 	"github.com/golang/glog"
 	v1 "k8s.io/api/core/v1"
 
@@ -50,4 +52,21 @@ func IsIngressLabeled(ingress *extensionsv1beta1.Ingress, label string) bool {
 		return true
 	}
 	return false
+}
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const (
+	letterIdxBits = 6                    // 6 bits to represent a letter index
+	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
+)
+
+func RandStringBytesMask(n int) string {
+	b := make([]byte, n)
+	for i := 0; i < n; {
+		if idx := int(rand.Int63() & letterIdxMask); idx < len(letterBytes) {
+			b[i] = letterBytes[idx]
+			i++
+		}
+	}
+	return string(b)
 }

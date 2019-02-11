@@ -46,7 +46,7 @@ type GlogWriter struct{}
 
 // Write implements the io.Writer interface.
 func (writer GlogWriter) Write(data []byte) (n int, err error) {
-	glog.InfoDepth(1, string(data))
+	glog.Info(string(data))
 	return len(data), nil
 }
 

@@ -17,7 +17,6 @@ limitations under the License.
 */
 
 import (
-	"fmt"
 	"time"
 
 	extensionsv1beta "k8s.io/api/extensions/v1beta1"
@@ -35,6 +34,7 @@ import (
 
 	"github.com/golang/glog"
 
+	"github.com/autonubil/default-backend-operator/pkg/types"
 	"github.com/autonubil/default-backend-operator/pkg/utils"
 )
 
@@ -51,7 +51,7 @@ type ingressConfigController struct {
 	// Informer for all resources being watched by the operator.
 	informer *ingressConfigControllerInformer
 
-	options *BackendOperatorOptions
+	options *types.BackendOperatorOptions
 }
 
 // Implements an Informer for the resources being operated on: ingresss &
@@ -63,7 +63,7 @@ type ingressConfigControllerInformer struct {
 }
 
 // Create a new Controller for the ingressConfig operator
-func NewingressConfigController(options *BackendOperatorOptions) (
+func NewingressConfigController(options *types.BackendOperatorOptions) (
 	*ingressConfigController, error) {
 
 	// Create the client config for use in creating the k8s API client
@@ -198,7 +198,7 @@ func (npc *ingressConfigController) handleIngressDelete(obj interface{}) {
 	ingress := obj.(*extensionsv1beta.Ingress)
 	glog.V(11).Infof("Received delete for ingress: %s/%s", ingress.Namespace, ingress.Name)
 	if npc.isWatchedLabel(ingress) {
-		// npc.processIngress(ingress, true)
+		delete(npc.options.Data.Services, string(ingress.UID))
 	} else {
 		glog.V(12).Infof("Skipping non ingress labeled ingress: %s/%s", ingress.Namespace, ingress.Name)
 	}
@@ -210,22 +210,10 @@ func (npc *ingressConfigController) handleIngressUpdate(oldObj, newObj interface
 	// oldingress := oldObj.(*extensionsv1beta.Ingress)
 	glog.V(11).Infof("Received update for ingress: %s/%s", ingress.Namespace, ingress.Name)
 	if npc.isWatchedLabel(ingress) {
-		// npc.processIngress(ingress, false)
-		svc := &Service{
-			ID:        string(ingress.UID),
-			Type:      "Ingress",
-			Name:      ingress.Name,
-			Namespace: ingress.Namespace,
-		}
-
-		for _, rule := range ingress.Spec.Rules {
-			svc.URL = fmt.Sprintf("http://%s", rule.Host)
-			break
-		}
-
+		svc := npc.options.NewService(ingress)
 		npc.options.Data.Services[string(ingress.UID)] = svc
-
 	} else {
 		glog.V(12).Infof("Skipping non ingress labeled ingress: %s/%s", ingress.Namespace, ingress.Name)
 	}
+
 }

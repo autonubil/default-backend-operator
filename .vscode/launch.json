@@ -14,7 +14,7 @@
 			"program": "${workspaceFolder}/default-backend-operator.go",
 			"env": {
 				"HOME": "C:/Users/czeumer",
-				"SENTRY_DSN": "https://bb5a795c9cd446acbccd68851cd3dde1:831d92586b6349168040852a1d994ce9@sentry.autonubil.net/18"
+				"SENTRY_DSN": "https://d37093b1c5104f488f2f1125d236f330:feaf619fe9c34dde85c62e7813359c54@sentry.autonubil.net/21"
 			},
 			"args": [
 				"--kubeconfig",
@@ -22,9 +22,26 @@
 				"--alsologtostderr",
 				"-p",
 				"-v",
-				"99",
-				"-s",
-				"${workspaceFolder}/configs/example.json"
+				"3",
+				"--entries",
+				"${workspaceFolder}/configs/example.json",
+				"--template",
+				"${workspaceFolder}/configs/index.tpl",
+				"--statics",
+				"${workspaceFolder}/configs/static",
+				"--oidc.issuer",
+				"https://keycloak.autonubil.net/auth/realms/autonubil",
+				"--oidc.secret",
+				"7d13db8b-d1c1-4257-8ca4-c88e9c110bba",
+				"--oidc.clientid",
+				"autonubil-wallaby",
+				"--oidc.enforce",
+				"--oidc.scopes",
+				"roles",
+				"--oidc.scopes",
+				"realm_access.roles",
+				"--oidc.scopes",
+				"permissions"
 			],
 			"showLog": true
 		},
@@ -38,7 +55,7 @@
 			"program": "${workspaceFolder}/grafana-config-operator.go",
 			"env": {
 				"HOME": "C:/Users/czeumer",
-				"SENTRY_DSN": "https://bb5a795c9cd446acbccd68851cd3dde1:831d92586b6349168040852a1d994ce9@sentry.autonubil.net/18"
+				"SENTRY_DSN": "https://d37093b1c5104f488f2f1125d236f330:feaf619fe9c34dde85c62e7813359c54@sentry.autonubil.net/21"
 			},
 			"args": ["--kubeconfig", "C:/Users/czeumer/.kube/config", "--alsologtostderr", "-p", "-v", "3"],
 			"showLog": true
