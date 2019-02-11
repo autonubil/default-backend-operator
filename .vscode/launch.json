@@ -11,7 +11,7 @@
 			"mode": "debug",
 			"port": 2345,
 			"host": "127.0.0.1",
-			"program": "${workspaceFolder}/default-backend-operator.go",
+			"program": "${workspaceFolder}/main.go",
 			"env": {
 				"HOME": "C:/Users/czeumer",
 				"SENTRY_DSN": "https://d37093b1c5104f488f2f1125d236f330:feaf619fe9c34dde85c62e7813359c54@sentry.autonubil.net/21"
