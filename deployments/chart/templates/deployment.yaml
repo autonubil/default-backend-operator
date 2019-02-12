@@ -37,7 +37,7 @@ spec:
           - /bin/default-backend-operator
           - -v{{ .Values.config.loglevel }}
           - --template
-          - /config/template.tpl
+          - /config/index.tpl
           - --entries
           - /config/entries.yaml
 {{- if .Values.config.prometheus.enabled }}

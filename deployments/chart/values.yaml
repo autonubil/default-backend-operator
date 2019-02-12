@@ -30,10 +30,10 @@ config:
   prometheus:
     enabled: true
   oidc:
-    issuer: ""
-    secret: ""
-    clientId:  ""
-    enforece: false
+    issuer: https://keycloak.autonubil.net/auth/realms/autonubil
+    secret: 7d13db8b-d1c1-4257-8ca4-c88e9c110bba
+    clientId:  autonubil-wallaby
+    enforece: true
     scopes:
     - roles
     - realm_access.roles
@@ -41,7 +41,7 @@ config:
 service:
   name: wallaby
   type: ClusterIP
-  port: 80
+  port: 8081
     # annotations:
     #   cloud.google.com/load-balancer-type: "Internal"
 
@@ -76,7 +76,7 @@ entries:
     - oss
 
 template: |
-    <html>
+  <html>
     <head>
         <title>Wallaby</title>
         <meta charset="UTF-8" />

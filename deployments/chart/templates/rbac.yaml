@@ -13,7 +13,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ template "wallaby.fullname" . }}-configmaps
+  name: {{ template "wallaby.fullname" . }}
   labels:
     app: {{ template "wallaby.fullname" . }}
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
@@ -40,7 +40,21 @@ rules:
     - pods/portforward
     verbs:
     - create
-
+  - apiGroups:
+    - extensions
+    resources:
+    - deployments
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - ""
+    resources:
+    - services
+    verbs:
+    - list
+    - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -54,7 +68,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "wallaby.fullname" . }}-configmaps
+  name: {{ template "wallaby.fullname" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "wallaby.fullname" . }}

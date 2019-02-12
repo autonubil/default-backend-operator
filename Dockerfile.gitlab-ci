@@ -4,6 +4,6 @@ LABEL maintainer="carsten.zeumer@autonubil.de"
 WORKDIR /bin
 
 COPY bin/default-backend-operator /bin/default-backend-operator
-COPY /configs/static static
+COPY static /static
 
 CMD ["/bin/default-backend-operator"]

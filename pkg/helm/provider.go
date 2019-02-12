@@ -316,7 +316,7 @@ func (p *HelmProvider) prepareTillerConnection(createIfMissing bool) error {
 				if errors.IsAlreadyExists(err) {
 					glog.Info("Tiller is already installed")
 				} else {
-					return fmt.Errorf("error installing: %s", err)
+					return fmt.Errorf("Helm not installed: %s", err)
 				}
 			}
 			if err := p.waitForTiller(o, 5*time.Minute); err != nil {
