@@ -64,7 +64,7 @@ func (backendHandler *BackendHandler) LoginHandler(responseWriter http.ResponseW
 			return nil, fmt.Errorf("oidc: malformed jwt: %v", err)
 		}
 
-		fmt.Print(string(payload))
+		glog.V(4).Info("OIDC Payload: %s", payload)
 
 		claims := types.KnownClaims{}
 		err = json.Unmarshal(payload, &claims)
@@ -219,12 +219,23 @@ func (backendHandler *BackendHandler) IndexHandler(responseWriter http.ResponseW
 				err = backendHandler.AuthHandler(responseWriter, request, code, templateData)
 			}
 		}
+
+		if backendHandler.Options.OidcConfig.Enforce && (err != nil || templateData.Claims == nil) {
+			if err != nil{
+			glog.V(2).Infof("Authentication is mandatory: %s", err.Error())
+		} else {
+			glog.V(3).Infof("Authentication is mandatory")
+
+		}
+			http.Redirect(responseWriter, request, templateData.OidcConfig.LoginURL, 302)
+			return
+		}
+
 		if err != nil {
 			raven.CaptureError(err, map[string]string{})
 			glog.Errorf("Problem during authentication: %s", err)
 			http.Error(responseWriter, "Problem during authentication", http.StatusBadRequest)
 			return
-
 		}
 
 		responseWriter.WriteHeader(200)

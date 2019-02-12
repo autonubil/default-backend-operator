@@ -1,0 +1,30 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "wallaby.fullname" . }}
+  annotations:
+    {{- if .Values.config.prometheus.enabled }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9350"
+    prometheus.io/path: /metrics
+    prometheus.io/scheme: "http"
+    {{- end }}
+  labels:
+    app: {{ template "wallaby.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    app: {{ template "wallaby.fullname" . }}
+    release: "{{ .Release.Name }}"
+  ports:
+  - port: {{ .Values.service.port }}
+    protocol: TCP
+    name: {{ .Values.service.name }}
+{{- if .Values.config.prometheus.enabled }}
+  - port: 9350
+    protocol: TCP
+    targetPort: 9350
+    name: prometheus
+{{- end }}

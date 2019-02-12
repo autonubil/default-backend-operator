@@ -31,10 +31,16 @@
 			.wallaby-layout .mdl-layout__drawer-button {
 			}
 
+			.mdl-card {
+				width: 200px;
+				margin: 15px;
+
+			}
+
 			.wallaby-card > .mdl-card__title {
 				background-color: #ddd;
-				height: 150px;
-				min-height: 150px;
+				width: 200px;
+				height: 200px;
 				z-index: 20;
 			}
 			.wallaby-card > .mdl-card__menu {
@@ -46,6 +52,8 @@
 			}
 
 			.wallaby-card > mdl-card__title-text {
+				position: absolute;
+				bottom: 10px;
 				z-index: 20;
 			}
 			.wallaby-card > .mdl-card__supporting-text {
@@ -53,13 +61,17 @@
 				min-height: 75px;
 			}
 
+			h2 {
+				font-size: 20px;
+				text-align: center;
+			}
+
 			.bkgndImg {
 				position: absolute;
 				left: 0px;
-				top: 10px;
-				height: 140px;
-				width: 140px;
-				min-width: 75px;
+				top: 7px;
+				height: 200px;
+				width: 200px;
 				text-align: center;
 				align-items: center;
 				z-index: 1;
@@ -86,16 +98,16 @@
 			}
 
 			img.overlay {
-				background: #ffffff33;
+				background: #ffffffa3;
 				-moz-border-radius: 25px;
 				-webkit-border-radius: 25px;
 				border-radius: 25px;
 
-				width: 50px;
-				height: 50px;
+				width: 40px;
+				height: 40px;
 				position: absolute;
 				top: 50px;
-				right: 0px;
+				right: 40px;
 			}
 			dialog {
 				border: 1px solid rgba(0, 0, 0, 0.3);
@@ -107,7 +119,7 @@
 		<script>
 	 	function showInfo(info) {
 			var dialog = document.querySelector('dialog');
-			document.querySelector('#appNotice').innerText=info;
+			document.querySelector('#appNotice').innerHTML=info;
 			if (! dialog.showModal) {
 				dialogPolyfill.registerDialog(dialog);
 			}
@@ -121,7 +133,7 @@
 	</head>
 	<body>
 		<dialog class="mdl-dialog--wide">
-			<h4 class="mdl-dialog__title">Application Notice</h4>
+			<h4 class="mdl-dialog__title">Application Info</h4>
 			<div class="mdl-dialog__content">
 			<pre id="appNotice">
 			</pre>
@@ -169,8 +181,7 @@
 			<main class="mdl-layout__content">
 				<div class="mdl-grid">
 					{{ range $svc := .Services  }}
-					<div style="padding: 10px">
-						<div class="wallaby-card mdl-card mdl-shadow--4dp">
+						<div class="wallaby-card mdl-card mdl-shadow--4dp" title="{{ $svc.Description }}">
 							<div class="mdl-card__title">
 								{{- if $svc.Icon }}
 								<span class="bkgndImg">
@@ -182,65 +193,74 @@
 									</a>
 								</span>
 								{{- end }}
-								<h4  title="{{ $svc.URL }}" class="mdl-card__title-text" style="z-index: 100;" ><a class="img" href="{{ $svc.URL }}" target="{{ $svc.ID }}">{{ $svc.Name | replace "-" " " | title }}</a></h4>
+								<h2  title="{{ $svc.URL }}" class="mdl-card__title-text" style="z-index: 100;" ><a class="img" href="{{ $svc.URL }}" target="{{ $svc.ID }}">{{ $svc.Name | replace "-" " " | title }}</a></h2>
 							</div>
-							<div class="mdl-card__supporting-text">
-								{{ $svc.Description }}<br />
+							<div id="element-{{ $svc.ID }}" style="display:none">
+
+								<div class="mdl-card__supporting-text">
+								<b>{{ $svc.Name | replace "-" " " | title }}</b><br/>
+								{{ $svc.URL }}<br/>
+								{{- if $svc.Description }}
+									{{ $svc.Description }}<br/>
+								{{- end }}
+								</div>
+
+									{{- if $svc.Info }}
+									<pre>{{ $svc.Info }}</pre>
+									{{- end }}
+
+
+									<div class="mdl-grid">
+									{{- if $svc.Visibility }}
+										<span class="mdl-chip" title="Network visibility: {{ $svc.Visibility }}">
+											<span  class="material-icons mdl-chip__contact">{{ if eq $svc.Visibility "public" }}public{{ else }}vpn_lock{{ end }}</span>
+											<span class="mdl-chip__text">{{ $svc.Visibility }}</span>
+										</span>
+									{{- end }}
+
+									{{- if $svc.Namespace }}
+										<span class="mdl-chip" title="Namespace: {{ $svc.Namespace }}">
+											<span  class="material-icons mdl-chip__contact">folder</span>
+											<span class="mdl-chip__text">{{ $svc.Namespace }}</span>
+										</span>
+									{{- end }}
+
+
+									{{- if $svc.ChartName }}
+										<span class="mdl-chip" title="Helm Chart: {{ $svc.ChartName }}-{{ $svc.ChartVersion }}" >
+											<span  class="material-icons mdl-chip__contact">table_chart</span>
+											<span class="mdl-chip__text">{{ $svc.ChartName }}</span>
+										</span>
+									{{- end }}
+
+									{{- if $svc.Application }}
+										<span class="mdl-chip" title="Application: {{ $svc.Application }}">
+											<span  class="material-icons mdl-chip__contact">apps</span>
+											<span class="mdl-chip__text">{{ $svc.Application }}</span>
+										</span>
+									{{- end }}
+
+									{{- range $tagId, $tag := $svc.Tags  }}
+										<span class="mdl-chip">
+											<span class="mdl-chip__text">{{ $tag }}</span>
+										</span>
+									{{- end }}
+								</div>
 							</div>
-							<div class="mdl-card__actions mdl-card--border">
-
-
-								{{- if $svc.Visibility }}
-									<span class="mdl-chip" title="Network visibility: {{ $svc.Visibility }}">
-										<span  class="material-icons mdl-chip__contact">{{ if eq $svc.Visibility "public" }}public{{ else }}vpn_lock{{ end }}</span>
-										<span class="mdl-chip__text">{{ $svc.Visibility }}</span>
-									</span>
-								{{- end }}
-
-								{{- if $svc.Namespace }}
-									<span class="mdl-chip" title="Namespace: {{ $svc.Namespace }}">
-										<span  class="material-icons mdl-chip__contact">folder</span>
-										<span class="mdl-chip__text">{{ $svc.Namespace }}</span>
-									</span>
-								{{- end }}
-
-
-								{{- if $svc.ChartName }}
-									<span class="mdl-chip" title="Helm Chart: {{ $svc.ChartName }}-{{ $svc.ChartVersion }}" >
-										<span  class="material-icons mdl-chip__contact">table_chart</span>
-										<span class="mdl-chip__text">{{ $svc.ChartName }}</span>
-									</span>
-								{{- end }}
-
-								{{- if $svc.Application }}
-									<span class="mdl-chip" title="Application: {{ $svc.Application }}">
-										<span  class="material-icons mdl-chip__contact">apps</span>
-										<span class="mdl-chip__text">{{ $svc.Application }}</span>
-									</span>
-								{{- end }}
-
-								{{- range $tagId, $tag := $svc.Tags  }}
-									<span class="mdl-chip">
-										<span class="mdl-chip__text">{{ $tag }}</span>
-									</span>
-								{{- end }}
-
-							</div>
-							{{- if $svc.Info }}
 							<div class="mdl-card__menu" style="z-index: 30;">
-								<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="javascript:showInfo('{{ $svc.Info }}')">
+								<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="javascript:showInfo(document.getElementById('element-{{ $svc.ID }}').innerHTML)">
 									<i class="material-icons">notes</i>
 								</button>
 							</div>
-							{{- end }}
-						</div>
+
 					</div>
 					{{ end }}
 				</div>
+				<!--
 				<pre>{{ .OidcConfig | toPrettyJson }}
 				<pre>{{ .Claims | toPrettyJson }}
 				</pre>
-
+-->
 			</main>
 			<footer class="mdl-mini-footer">
 				<span>&copy; 2019 by <a href="http://autonubil.com/">autonubil System GmbH</a></span>&nbsp;&nbsp;

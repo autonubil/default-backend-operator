@@ -80,7 +80,7 @@ func RefreshHelm(options *types.BackendOperatorOptions) error {
 	for _, release := range releases {
 		helmRelease := types.NewHelmRelease(release)
 		options.Data.Releases[fmt.Sprintf("%s/%s",release.Namespace, release.Name)] = helmRelease
-		glog.V(1).Infof("read Release: %s/%s -> \n--\n%v\n", release.Namespace, release.Name, helmRelease)
+		glog.V(4).Infof("read Release: %s/%s -> \n--\n%v\n", release.Namespace, release.Name, helmRelease)
 	}
 	return nil
 }

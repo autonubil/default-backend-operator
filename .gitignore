@@ -3,6 +3,4 @@ debug
 default-backend-operator
 keycloak.json
 
-configs
-deployments
 .vscode

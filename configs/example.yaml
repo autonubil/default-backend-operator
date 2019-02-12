@@ -1,0 +1,62 @@
+- id: gitlab
+  index: 10
+  name: GitLab
+  description: From project planning and source code management to CI/CD and monitoring, GitLab is a single application for the entire DevOps lifecycle.
+  visibility: public
+  url: https://gitlab.autonubil.net/
+  icon: /static/gitlab.svg
+  tags:
+    - git
+    - "ci/cd"
+- id: account
+  index: 499
+  name: account
+  visibility: public
+  description: Your Account Settings
+  url: https://keycloak.autonubil.net/auth/realms/autonubil/account
+  icon: /static/avatar.svg
+  overlay: /static/keycloak.svg
+  tags:
+  - identity
+  - account
+- id: calendar
+  index: 500
+  name: Calendar4
+  visibility: public
+  description: Office365 Calendar
+  url: https://outlook.office.com/owa/?realm=autonubil.de
+  icon: http://www.bytes.co.uk/application/themes/cloudflex/img/cloudflex/office365-icons/outlook-icon.svg
+  tags:
+  - office365
+- id: email
+  index: 500
+  name: E-Mail
+  visibility: public
+  description: Office365 E-Mail
+  url: https://outlook.office.com/owa/?realm=autonubil.de
+  icon: http://www.bytes.co.uk/application/themes/cloudflex/img/cloudflex/office365-icons/outlook-icon.svg
+  tags:
+  - office365
+- id: sharepoint
+  index: 500
+  name: Sharepoint
+  visibility: public
+  description: Office365 Sharepoint
+  url: https://autonubilsystem.sharepoint.com/_layouts/15/sharepoint.aspx
+  icon: https://752f77aa107738c25d93-f083e9a6295a3f0714fa019ffdca65c3.ssl.cf1.rackcdn.com/office-365/products/sharepoint.svg
+  tags:
+  - office365
+
+- id: an-github
+  index: 500
+  name: GitHub
+  visibility: public
+  description: autonubil on GitHub
+  url: https://github.com/autonubil
+  icon: https://avatars1.githubusercontent.com/u/12993243?s=200&v=4
+  tags:
+  - github
+  - source
+  - autonubil
+  - oss
+

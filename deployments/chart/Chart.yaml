@@ -1,0 +1,15 @@
+name: wallaby
+description: A default backend for easy access to ingress resources
+version: 0.1.0
+appVersion: 0.1.0
+tillerVersion: '>=2.8.2'
+kubeVersion: '>=1.9.5-0'
+keywords:
+    - kubernetes
+    - default
+    - backend
+sources:
+    - https://github.com/autonubil/default-backend-operator
+maintainers:
+    - name: Carsten Zeumer
+      email: carsten.zeumer@autonubil.de

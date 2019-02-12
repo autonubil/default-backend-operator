@@ -1,0 +1,15 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "wallaby.fullname" . }}-config"
+  labels:
+    app: "{{ template "wallaby.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  index.tpl: |
+{{ toYaml .Values.template | indent 4 }}
+  entries.yaml: |
+{{ toYaml .Values.entries | indent 4 }}

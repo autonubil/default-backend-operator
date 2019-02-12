@@ -2,7 +2,9 @@ package types
 
 import (
 	"context"
-	"encoding/json"
+
+	"gopkg.in/yaml.v2"
+
 	"html/template"
 	"io/ioutil"
 	"net"
@@ -290,11 +292,18 @@ func (opts *BackendOperatorOptions) RefreshStatics() error {
 		if err != nil {
 			return err
 		}
-		err = json.Unmarshal(statics, &opts.Data)
+
+		services := []Service{}
+		err = yaml.Unmarshal(statics, &services)
+
 		if err != nil {
 			return err
 		}
 		glog.V(2).Infof("Using entries from %s", opts.EntriesPath)
+
+		for i, service := range services {
+			opts.Data.Services[service.ID] = &services[i]
+		}
 	}
 	return nil
 }

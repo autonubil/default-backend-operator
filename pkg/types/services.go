@@ -161,7 +161,7 @@ func (d *BackendOperatorOptions) getVisibility(ingress *extensionsv1beta.Ingress
 	if err == nil {
 		ips, err := net.LookupIP(url.Host)
 		if err == nil {
-			glog.V(1).Infof("Host %s resolved to %v", url.Host, ips)
+			glog.V(4).Infof("Host %s resolved to %v", url.Host, ips)
 			isPrivat := false
 			for _, ip := range ips {
 				for _, block := range privateIPBlocks {
@@ -244,17 +244,14 @@ func (d *BackendOperatorOptions) addReleaseInfo(ingress *extensionsv1beta.Ingres
 	}
 
 	if appNameLabelValue, exists := ingress.ObjectMeta.Labels["app"]; exists {
-		svc.Name = appNameLabelValue
 		svc.Application = appNameLabelValue
 	} else if appNameLabelValue, exists := ingress.ObjectMeta.Labels["app.kubernetes.io/name"]; exists {
-		svc.Name = appNameLabelValue
 		svc.Application = appNameLabelValue
 	}
 
 	helmRelease := d.Data.Releases[fmt.Sprintf("%s/%s", ingress.Namespace, release)]
 
 	if helmRelease == nil {
-		svc.Description = fmt.Sprintf("Release: %s/%s not found", ingress.Namespace, release)
 		return false
 	}
 
