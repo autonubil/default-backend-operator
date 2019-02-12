@@ -48,7 +48,6 @@ assemble:
     script:
         - export ROOT=$(pwd)
         - cp $ROOT/bin/default-backend-operator ./
-        - cp $ROOT/configs/static ./
         - docker version
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - docker build --pull -t "${DOCKER_TEST_IMAGE}"  -f Dockerfile.gitlab-ci .
