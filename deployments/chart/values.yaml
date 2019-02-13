@@ -76,6 +76,7 @@ entries:
     - oss
 
 template: |
+  <!DOCTYPE html>
   <html>
     <head>
         <title>Wallaby</title>

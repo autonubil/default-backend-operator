@@ -10,6 +10,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
   index.tpl: |
-{{ toYaml .Values.template | indent 4 }}
+{{ .Values.template | indent 4 }}
   entries.yaml: |
 {{ toYaml .Values.entries | indent 4 }}

@@ -27,7 +27,7 @@ LABEL maintainer="carsten.zeumer@autonubil.de"
 WORKDIR /
 
 COPY --from=build-env /bin/default-backend-operator /default-backend-operator
-COPY /configs/static static
+COPY /configs/static /static
 
 EXPOSE 9350
 
