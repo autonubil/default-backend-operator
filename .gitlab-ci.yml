@@ -88,8 +88,8 @@ deploy-stable-chart:
         - cat ./index.yaml
     only:
         - tags
-    
-    deploy-master-chart:
+
+deploy-master-chart:
     stage: release
     script:
         - cd deployments
@@ -99,5 +99,4 @@ deploy-stable-chart:
         - cat ./index.yaml
     only:
         - master
-    
-          
+
