@@ -47,8 +47,8 @@ assemble:
     stage: assemble
     script:
         - export ROOT=$(pwd)
-        - cp $ROOT/bin/default-backend-operator ./
-        - cp -r $ROOT/configs/static ./
+        #- cp $ROOT/bin/default-backend-operator ./
+        #- cp -r $ROOT/configs/static ./
         - docker version
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - docker build --pull -t "${DOCKER_TEST_IMAGE}" -f Dockerfile.gitlab-ci .
@@ -76,3 +76,28 @@ publish-image:
         - docker push "${DOCKER_PUBLIC_IMAGE}"
     only:
         - tags
+
+
+deploy-stable-chart:
+    stage: release
+    script:
+        - cd deployments
+        - mv chart prometheus-webhook-snmptrapper
+        - cd prometheus-webhook-snmptrapper
+        - helm_publish_chart.sh stable
+        - cat ./index.yaml
+    only:
+        - tags
+    
+    deploy-master-chart:
+    stage: release
+    script:
+        - cd deployments
+        - mv chart prometheus-webhook-snmptrapper
+        - cd prometheus-webhook-snmptrapper
+        - helm_publish_chart.sh latest
+        - cat ./index.yaml
+    only:
+        - master
+    
+          
