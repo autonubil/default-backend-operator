@@ -36,6 +36,8 @@ spec:
         args:
           - /bin/default-backend-operator
           - -v{{ .Values.config.loglevel }}
+          - --statics
+          - /static
           - --template
           - /config/index.tpl
           - --entries
@@ -55,7 +57,7 @@ spec:
           - {{ .Values.config.oidc.secret | quote }}
 {{- end }}
 {{- if .Values.config.oidc.clientId }}
-          - --oidc.clientId
+          - --oidc.clientid
           - {{ .Values.config.oidc.clientId | quote }}
 {{- end }}
 {{- if .Values.config.oidc.enforece }}

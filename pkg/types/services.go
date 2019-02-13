@@ -214,7 +214,7 @@ func (d *BackendOperatorOptions) addAnnotatons(ingress *extensionsv1beta.Ingress
 	}
 
 	// labeled as "hidden?"
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/hidden"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/hidden"]; exists {
 		b, err := strconv.ParseBool(value)
 		if err != nil || b {
 			svc.hidden = true
