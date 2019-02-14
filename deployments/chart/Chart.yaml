@@ -1,7 +1,7 @@
 name: wallaby
 description: A default backend for easy access to ingress resources
 version: 0.2.0
-appVersion: 0.1.2
+appVersion: 0.1.4
 tillerVersion: '>=2.8.2'
 kubeVersion: '>=1.9.5-0'
 keywords:

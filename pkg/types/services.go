@@ -186,30 +186,33 @@ func (d *BackendOperatorOptions) getVisibility(ingress *extensionsv1beta.Ingress
 }
 
 func (d *BackendOperatorOptions) addAnnotatons(ingress *extensionsv1beta.Ingress, svc *Service) {
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/index"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/index"]; exists {
 		val, err := strconv.ParseUint(value, 10, 32)
 		if err == nil {
 			svc.Index = val
 		} else {
-			glog.Error("Could not parse index value '%s' for ingress annotation wallaby.autonubuil.net/index at  %s/%s", value, ingress.Namespace, ingress.Name)
+			glog.Error("Could not parse index value '%s' for ingress annotation wallaby.autonubil.net/index at  %s/%s", value, ingress.Namespace, ingress.Name)
 		}
 	}
 
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/name"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/name"]; exists {
 		svc.Name = value
 	}
 
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/description"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/description"]; exists {
 		svc.Description = value
 	}
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/url"]; exists {
+		svc.URL = value
+	}
 
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/icon"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/icon"]; exists {
 		svc.Icon = value
 	}
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/overlay"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/overlay"]; exists {
 		svc.Overlay = value
 	}
-	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubuil.net/tags"]; exists {
+	if value, exists := ingress.ObjectMeta.Annotations["wallaby.autonubil.net/tags"]; exists {
 		svc.Tags.SetAll(strings.Split(value, ","))
 	}
 
