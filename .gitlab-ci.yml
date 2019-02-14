@@ -82,8 +82,8 @@ deploy-stable-chart:
     stage: release
     script:
         - cd deployments
-        - mv chart prometheus-webhook-snmptrapper
-        - cd prometheus-webhook-snmptrapper
+        - mv chart wallaby
+        - cd wallaby
         - helm_publish_chart.sh stable
         - cat ./index.yaml
     only:
@@ -93,8 +93,8 @@ deploy-master-chart:
     stage: release
     script:
         - cd deployments
-        - mv chart prometheus-webhook-snmptrapper
-        - cd prometheus-webhook-snmptrapper
+        - mv chart wallby
+        - cd wallby
         - helm_publish_chart.sh latest
         - cat ./index.yaml
     only:
