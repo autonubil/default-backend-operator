@@ -93,8 +93,8 @@ deploy-master-chart:
     stage: release
     script:
         - cd deployments
-        - mv chart wallby
-        - cd wallby
+        - mv chart wallaby
+        - cd wallaby
         - helm_publish_chart.sh latest
         - cat ./index.yaml
     only:
