@@ -7,7 +7,7 @@ The resulting page is template based an can be fully customized.
 ## Feaures
 
 -   Watches all ingresses and
--   Template based index
+-   Template based index-page
 -   Serve static content
 -   OIDC Authentication build in
 -   Retreive information from HELM
@@ -36,23 +36,23 @@ SENTRY_DSN=<your_dns>
 
 ## Annotations
 
-    wallaby.autonubuil.net/hidden
+    wallaby.autonubil.net/hidden
 
-    wallaby.autonubuil.net/index
-    wallaby.autonubuil.net/name
-    wallaby.autonubuil.net/url
-    wallaby.autonubuil.net/visibility
-    wallaby.autonubuil.net/description
-    wallaby.autonubuil.net/icon
-    wallaby.autonubuil.net/overlay
-    wallaby.autonubuil.net/tags
+    wallaby.autonubil.net/index
+    wallaby.autonubil.net/name
+    wallaby.autonubil.net/url
+    wallaby.autonubil.net/visibility
+    wallaby.autonubil.net/description
+    wallaby.autonubil.net/icon
+    wallaby.autonubil.net/overlay
+    wallaby.autonubil.net/tags
 
-    wallaby.autonubuil.net/filter
+    wallaby.autonubil.net/filter
 
 ### Filter Syntax
 
-    all claimes are flattend and can be
+    UP NEXT....
 
 # Roadmap
-
--   Add Services too
+-  implement filtering based on user claims
+-  Add Services too
