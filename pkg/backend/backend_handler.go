@@ -141,7 +141,11 @@ func (backendHandler *BackendHandler) AuthPrepareHandler(responseWriter http.Res
 		if request.TLS != nil {
 			schema = "https"
 		} else {
-			schema = "http"
+			// behind a reverse proxy
+			schema = request.Header.Get("X-Forwarded-Proto")
+			if schema == "" {
+				schema = "http"
+			}
 		}
 		templateData.OidcConfig.Config.RedirectURL = fmt.Sprintf("%s://%s/auth", schema, request.Host)
 		templateData.OidcConfig.LoginURL = templateData.OidcConfig.Config.AuthCodeURL(sessionCookie.Value)
@@ -221,12 +225,12 @@ func (backendHandler *BackendHandler) IndexHandler(responseWriter http.ResponseW
 		}
 
 		if backendHandler.Options.OidcConfig.Enforce && (err != nil || templateData.Claims == nil) {
-			if err != nil{
-			glog.V(2).Infof("Authentication is mandatory: %s", err.Error())
-		} else {
-			glog.V(3).Infof("Authentication is mandatory")
+			if err != nil {
+				glog.V(2).Infof("Authentication is mandatory: %s", err.Error())
+			} else {
+				glog.V(3).Infof("Authentication is mandatory")
 
-		}
+			}
 			http.Redirect(responseWriter, request, templateData.OidcConfig.LoginURL, 302)
 			return
 		}
